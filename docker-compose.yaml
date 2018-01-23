@@ -1,0 +1,31 @@
+version: "2"
+services:
+
+  mariadb:
+#    image: ${REGISTRY}:mariadb:10.0
+    build:
+        context: .
+        dockerfile: mariadb.dockerfile
+    restart: always
+    environment:
+      - TZ=${TIMEZONE}
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+#      - MYSQL_USER
+#      - MYSQL_PASSWORD
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./volumes/mysql-data:/var/lib/mysql
+      - ./assets/mysql:/etc/mysql/conf.d
+
+
+  docs:
+    image: cogset/mkdocs:latest
+    restart: on-failure
+    ports:
+      - "${DOCS_PORT}:8000"
+    volumes:
+      - ./docs:/docs/src/docs # For security reasons, do not mount the whole
+      - ./mkdocs.yml:/docs/src/mkdocs.yml # directory containing private key
+
