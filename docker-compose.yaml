@@ -1,6 +1,66 @@
 version: "2"
 services:
 
+
+  php-fpm:
+#    image: ${REGISTRY}:php-fpm-7
+    build:
+      context: .
+      dockerfile: php-fpm.dockerfile
+      args:
+        - TZ=${TIMEZONE}
+        - BUILD_NO
+    restart: always
+    environment:
+      - TZ=${TIMEZONE}
+      - BUILD_NO
+#      - NGINX_SERVER_NAME
+#      - NGINX_PROTOCOL
+      - MYSQL_HOST
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_PORT
+#    ports:
+#      - "127.0.0.1:${PHP_FPM_HOST_PORT}:9000"
+    volumes:
+      - ./volumes/log/php-fpm:/var/log/php
+      - ./volumes/studip-data:/usr/local/studip/data
+
+
+
+
+  nginx:
+#    image: ${REGISTRY}:nginx-5.1.18
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+      args:
+        - TZ=${TIMEZONE}
+        - BUILD_NO
+    restart: always
+    environment:
+      - TZ=${TIMEZONE}
+      - BUILD_NO
+      - PHP_FPM_PORT=9000
+      - NGINX_SERVER_NAME
+      - ILIAS_SET_DD_PERMISSION
+      - ILIAS_MAX_EXECUTION_TIME
+      - ILIAS_DEVEL_MODE
+      - NGINX_SSL_ENABLED
+      - NGINX_FORCE_HTTPS
+      - NGINX_PROTOCOL
+      - NGINX_HOST_SSL_PORT
+    ports:
+      - "${NGINX_HOST_SSL_PORT}:443"
+      - "${NGINX_HOST_PORT}:80"
+    volumes:
+      - ./volumes/log/nginx:/var/log/nginx
+      - ./cert/ssl-server:/etc/cert/ssl-server
+    links:
+      - php-fpm
+
+
   mariadb:
 #    image: ${REGISTRY}:mariadb:10.0
     build:
