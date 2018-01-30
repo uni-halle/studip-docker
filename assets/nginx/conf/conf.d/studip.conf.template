@@ -1,0 +1,148 @@
+# The .template file is a template configuration for
+# STUDIP-nginx-docker.
+# nginx doesn't allow environment variables in its
+# configuration so they are substituted when launching
+# the container.
+
+${STUDIP_HTTPS_REDIRECT_CONFIG}
+
+server {
+	server_name ${NGINX_SERVER_NAME};
+
+${STUDIP_SSL_CONFIG}
+
+	root /var/www/studip/public;
+	index index.php index.html index.htm;
+##Sicherheit###############################################################
+
+	##Buffergrößen
+	## Die folgenden Einstellungen können Auswirkungen auf die Performance haben.
+	## Allerdings eher in Ausnahmefällen. Normalerweise sind die Buffergrößen für
+	## fast alle Anwendungen ausreichend und verhindern Bufferoverflows, die nicht so
+	## selten auftreten: http://nginx.org/en/security_advisories.html
+	client_body_buffer_size  1K;
+	client_header_buffer_size 1k;
+	large_client_header_buffers 4 32k;
+	##client_max_body_size: Der folgende Parameter beschränkt die Größe von Dateiuploads.
+	## Wenn man Dateien uploaden will, muss der Wert des Parameters erhöht werden.
+	## Das sollte aber in einer dafür konfigurierten Location (z. B. /admin) erfolgen (siehe unten).
+
+	## Das funktioniert in STUDIP nicht so einfach weil es nichts wie /admin gibt
+
+	client_max_body_size 250m;
+
+	##Timeouts
+	## Timeouts werden auf kleine Werte gesetzt um DOS-Attacken zu behindern.
+	## Für Timeouts gilt das gleiche wie für Buffer. Braucht man längere Timeouts z. B. für
+	## Abfragen, die lange Wartezeiten zur Folge haben (z. B. im Admin-Bereich eines CMS) sollten
+	## Timeouts in entsprechenden locations (siehe unten) spezifiziert werden.
+	client_body_timeout   300;
+	client_header_timeout 60;
+	# Manche Browser kümmern sich nicht weiter um keepalive_timeout
+	# (http://wiki.nginx.org/HttpCoreModule#keepalive_timeout)
+	keepalive_timeout 5 5;
+	send_timeout 300;
+
+	##Verbindungsanzahl
+	#limit_zone slimits $binary_remote_addr 5m;
+	## Beschränkung der Verbindungen auf 5 je IP
+	## Das kann Probleme verursachen wenn Clients sich hinter Proxies oder NAT-Firewalls befinden
+	## Dann muss ggf. erhöht werden.
+	#limit_conn slimits 5;
+
+	##http Methoden
+	## Es gibt andere HTTP-Methoden abseits von GET, POST, HEAD.
+	## (http://www.ietf.org/rfc/rfc2616.txt)
+	## Wenn die nicht gebraucht werden, kann man die Methoden beschränken.
+	if ($request_method !~ ^(GET|HEAD|POST)$ ) {
+		return 444;
+	}
+
+############################################################################
+
+        # Deny access to index files
+        location ~* ^/(secured-)?data/.*\.(cfs|log|gen)$ {
+                deny all;
+        }
+
+        # File extensions hinting file types directly interpreted by
+        # many browsers that have the potential to interfer with our
+        # privacy policy or hijack the user's session.
+        # Do not allow delivery of those. Users may zip them so
+        # they're offered for download.
+        location ~* ^/(secured-)?data/.*\.(html|htm|shtm|shtml|cgi|asp|php|php5|phtml|phps|inc|xml|swf)$ {
+                deny all;
+        }
+
+	# FCGI-pass some requests to PHP files:
+	# allow all PHP files in root dir
+	# Some plugins unfortunately also add entrypoints.
+	location ~ ^(/[^/]+\.php|(/Customizing/global/plugins/|/cron/|/include/|/Modules/|/Services/|/setup/|/sso/|/webservice/).*\.php(/.*)?)$ {
+		# split e.g. /plugin/api.php/whatever into /plugin/api.php
+		# and whatever
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		# then try e.g. /plugin/api.php
+		# if the file doesn't exist, FCGI isn't even invoked
+		# which is good for performance and security
+		try_files $fastcgi_script_name =404;
+
+		# Mitigate https://httpoxy.org/ vulnerabilities
+		fastcgi_param HTTP_PROXY "";
+
+		fastcgi_pass php-fpm:${PHP_FPM_PORT};
+		fastcgi_index index.php;
+		include fastcgi_params;
+
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+		fastcgi_connect_timeout 60;
+		fastcgi_send_timeout 7200;
+		fastcgi_read_timeout 7200;
+		fastcgi_buffer_size 128k;
+		fastcgi_buffers 4 256k;
+		fastcgi_busy_buffers_size 256k;
+		fastcgi_temp_file_write_size 256k;
+		fastcgi_intercept_errors on;
+		fastcgi_param PHP_VALUE "upload_max_filesize=20M
+                                         post_max_size=21M
+                                         memory_limit=256M
+                                         max_execution_time=300
+                                         short_open_tag=On
+                                         session.use_trans_sid=Off
+                                         magic_quotes_gpc=On
+                                         error_reporting=22519";
+		fastcgi_param PHP_ADMIN_VALUE "allow_url_fopen=On";
+		
+		error_page 502 /502.html;
+		error_page 504 /504.html;
+	}
+
+	# Do not find php files except those listed above
+	location ~ \.php {
+		return 404;
+	}
+
+
+	location ~ /\.ht {
+		deny all;
+	}
+
+	location /nginx_status {
+		stub_status on;
+		access_log off;
+		allow 127.0.0.1;
+		allow 141.48.4.186;
+		allow 141.48.1.80;
+		allow 141.48.1.73;
+		deny all;
+	}
+
+	location ~ /STUDIP-docker_50[24]\.html {
+		root /usr/share/nginx/html/error_pages;
+		internal;
+	}
+}
+
+#	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
