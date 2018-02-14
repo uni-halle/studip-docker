@@ -16,6 +16,7 @@ services:
       - TZ=${TIMEZONE}
       - BUILD_NO
       - NGINX_SERVER_NAME
+      - NGINX_HOST_PORT
       - NGINX_PROTOCOL
       - MYSQL_HOST
       - MYSQL_DATABASE
