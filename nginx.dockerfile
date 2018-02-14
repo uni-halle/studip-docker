@@ -28,7 +28,7 @@ RUN \
 	&& rm /etc/nginx/conf.d/default.conf \
 	&& cd .. && rm -r assets
 
-COPY assets/studip-release/3.5.3/public /var/www/studip/public
+COPY assets/studip-release/4.0/public /var/www/studip/public
 COPY assets/nginx/nginx-error-pages/studip-docker_504.html /var/www/studip/public/504.html
 COPY assets/nginx/nginx-error-pages/studip-docker_502.html /var/www/studip/public/502.html
 

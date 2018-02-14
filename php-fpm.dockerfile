@@ -20,6 +20,7 @@ RUN mkdir -p /usr/share/man/man1
 
 
 
+
 # Benoetigte Pakete installieren
 
 RUN \
@@ -36,6 +37,8 @@ RUN \
                            unzip \
 	&& rm -r /var/lib/apt/lists/*
 
+
+
 # PHP-Erweiterungen installieren
 RUN \
 	docker-php-ext-install -j$(nproc) xsl iconv dom pdo mysql mysqli \
@@ -48,15 +51,18 @@ RUN \
 	&& pear install XML_RPC2 mail HTTP_Request2 Auth DB HTML_Template_IT \
 	MDB2#mysql MDB2#mysqli
 
-
 COPY assets/php-fpm/php-fpm-entrypoint.sh /php-fpm-entrypoint.sh
-COPY assets/studip-release/3.5.3 /var/www/studip
+COPY assets/studip-release/4.0 /var/www/studip
 COPY assets/php-fpm/config_local.inc.php /var/www/studip/config/config_local.inc.php
 COPY assets/php-fpm/config.inc.php /var/www/studip/config/config.inc.php
+
+RUN chown -R www-data:www-data /var/www/studip
+
+RUN mkdir -p /var/log/php && chown www-data:www-data /var/log/php
 
 # Einstiegspunkt setzen
 ENTRYPOINT ["/php-fpm-entrypoint.sh"]
 CMD ["php-fpm"]
-WORKDIR /usr/local/studip/public/
+WORKDIR /var/www/studip/
 
 
