@@ -1,1 +1,3 @@
 volumes/mysql-data/
+volumes/log/
+assets/studip-release/*/.svn
