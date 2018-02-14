@@ -20,7 +20,7 @@ envsubst \
     < ${PHP_FPM_WEB_ROOT}/config/config_local.inc.php.template \
     > ${PHP_FPM_WEB_ROOT}/config/config_local.inc.php
 envsubst \
-    '${NGINX_SERVER_NAME} ${NGINX_HOST_PORT}'
+    '${NGINX_PROTOCOL} ${NGINX_SERVER_NAME} ${NGINX_HOST_PORT}' \
     < ${PHP_FPM_WEB_ROOT}/config/config.inc.php.template \
     > ${PHP_FPM_WEB_ROOT}/config/config.inc.php
 
