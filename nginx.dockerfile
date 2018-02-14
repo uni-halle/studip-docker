@@ -2,6 +2,7 @@ FROM nginx:stable
 
 ARG TZ
 ARG BUILD_NO
+ARG NGINX_WEB_ROOT
 
 # Update durchführen
 RUN \
@@ -28,11 +29,11 @@ RUN \
 	&& rm /etc/nginx/conf.d/default.conf \
 	&& cd .. && rm -r assets
 
-COPY assets/studip-release/4.0/public /var/www/studip/public
-COPY assets/nginx/nginx-error-pages/studip-docker_504.html /var/www/studip/public/504.html
-COPY assets/nginx/nginx-error-pages/studip-docker_502.html /var/www/studip/public/502.html
+COPY --chown=www-data:www-data assets/studip-release/4.0/public ${NGINX_WEB_ROOT}
+COPY --chown=www-data:www-data assets/nginx/nginx-error-pages/studip-docker_504.html ${NGINX_WEB_ROOT}/504.html
+COPY --chown=www-data:www-data assets/nginx/nginx-error-pages/studip-docker_502.html ${NGINX_WEB_ROOT}/502.html
 
 ENTRYPOINT ["/nginx-entrypoint.sh"]
 CMD ["nginx"]
-WORKDIR /var/www/studip
+WORKDIR ${NGINX_WEB_ROOT}
 

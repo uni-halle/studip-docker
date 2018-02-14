@@ -2,11 +2,6 @@
 
 set -e
 
-prev_dir="$PWD"
-cd /usr/local/studip/public
-
-#chown -v -R www-data /usr/local/studip
-
 echo 'Configuring PHP-FPM ...'
 echo FIXME
 #envsubst \
@@ -19,6 +14,17 @@ echo FIXME
 #        < /etc/ssmtp/ssmtp.conf.template \
 #        > /etc/ssmtp/ssmtp.conf
 
+echo 'Configuring Stud.IP'
+envsubst \
+    '${MYSQL_HOST} ${MYSQL_USER} ${MYSQL_PASSWORD} ${MYSQL_DATABASE}' \
+    < ${PHP_FPM_WEB_ROOT}/config/config_local.inc.php.template \
+    > ${PHP_FPM_WEB_ROOT}/config/config_local.inc.php
+envsubst \
+    '${NGINX_SERVER_NAME} ${NGINX_HOST_PORT}'
+    < ${PHP_FPM_WEB_ROOT}/config/config.inc.php.template \
+    > ${PHP_FPM_WEB_ROOT}/config/config.inc.php
+
+
 echo 'Setting logs directory permission ...'
 mkdir -p /var/log/studip
 chown -R www-data /var/log/studip
@@ -28,8 +34,8 @@ chmod u+w /var/log/studip
 if [ "$STUDIP_SET_DD_PERMISSION" = true ] || [ "$STUDIP_FRESH_INSTALL" = true ]; then
 	echo 'Setting data directory permission ...'
 	echo '[This may take a while.]'
-	chown -R -v www-data /usr/local/studip/data
-	chmod u+r /usr/local/studip/data
+	chown -R -v www-data ${PHP_FPM_WEB_ROOT}
+	chmod u+r ${PHP_FPM_WEB_ROOT}
 else
 	echo 'Skip setting data directory permission'
 fi

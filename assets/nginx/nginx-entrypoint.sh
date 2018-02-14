@@ -85,16 +85,16 @@ fi
 echo 'substituting variables in nginx configuration'
 envsubst \
 	'${NGINX_SERVER_NAME} ${PHP_FPM_PORT} ${STUDIP_MAX_EXECUTION_TIME}
-	 ${STUDIP_SSL_CONFIG} ${STUDIP_HTTPS_REDIRECT_CONFIG}' \
+	 ${NGINX_WEB_ROOT} ${STUDIP_SSL_CONFIG} ${STUDIP_HTTPS_REDIRECT_CONFIG}' \
 	< /etc/nginx/conf.d/studip.conf.template \
 	> /etc/nginx/conf.d/studip.conf
 
 if [ "$STUDIP_SET_DD_PERMISSION" = true ]; then
 	echo 'Setting data directory permission.'
 	echo 'This may take a while.'
-	chgrp -R nginx /var/www/studip/data
-	chmod -R g+r /var/www/studip/data
-	find /var/www/studip/data -type d -exec chmod g+s  {} \;
+	chgrp -R nginx /var/www/studip/public
+	chmod -R g+r /var/www/studip/public
+	find /var/www/studip/public -type d -exec chmod g+s  {} \;
 else
 	echo 'Skip setting data directory permission'
 fi

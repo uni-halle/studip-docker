@@ -11,7 +11,7 @@ server {
 
 ${STUDIP_SSL_CONFIG}
 
-	root /var/www/studip/public;
+	root ${NGINX_WEB_ROOT};
 	index index.php index.html index.htm;
 ##Sicherheit###############################################################
 
@@ -77,10 +77,15 @@ ${STUDIP_SSL_CONFIG}
 	# FCGI-pass some requests to PHP files:
 	# allow all PHP files in root dir
 	# Some plugins unfortunately also add entrypoints.
-	location ~ ^(/[^/]+\.php|(/Customizing/global/plugins/|/cron/|/include/|/Modules/|/Services/|/setup/|/sso/|/webservice/).*\.php(/.*)?)$ {
+	location ~ ^(/[^/]+\.php(/)*.*|(/Customizing/global/plugins/|/cron/|/include/|/Modules/|/Services/|/setup/|/sso/|/webservice/).*\.php(/.*)?)$ {
+#	location ~ ^/.*\.php.*$ {
 		# split e.g. /plugin/api.php/whatever into /plugin/api.php
 		# and whatever
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		
+		# try_files erases the content of $fastcgi_path_info, save value for later use
+		set $path_info $fastcgi_path_info;
+		
 		# then try e.g. /plugin/api.php
 		# if the file doesn't exist, FCGI isn't even invoked
 		# which is good for performance and security
@@ -89,13 +94,9 @@ ${STUDIP_SSL_CONFIG}
 		# Mitigate https://httpoxy.org/ vulnerabilities
 		fastcgi_param HTTP_PROXY "";
 
-		fastcgi_pass php-fpm:${PHP_FPM_PORT};
 		fastcgi_index index.php;
 		include fastcgi_params;
 
-		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		fastcgi_param PATH_INFO $fastcgi_path_info;
-		fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
 		fastcgi_connect_timeout 60;
 		fastcgi_send_timeout 7200;
 		fastcgi_read_timeout 7200;
@@ -113,15 +114,18 @@ ${STUDIP_SSL_CONFIG}
                                          magic_quotes_gpc=On
                                          error_reporting=22519";
 		fastcgi_param PHP_ADMIN_VALUE "allow_url_fopen=On";
-		
+
 		error_page 502 /502.html;
 		error_page 504 /504.html;
+
+		fastcgi_pass php-fpm:${PHP_FPM_PORT};
+
 	}
 
-	# Do not find php files except those listed above
-	location ~ \.php {
-		return 404;
-	}
+#	# Do not find php files except those listed above
+#	location ~ \.php {
+#		return 404;
+#	}
 
 
 	location ~ /\.ht {

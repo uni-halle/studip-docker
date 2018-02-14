@@ -18,7 +18,7 @@
 // functions.php
 // Stud.IP Kernfunktionen
 // Copyright (C) 2002 Cornelis Kater <ckater@gwdg.de>, Suchi & Berg GmbH <info@data-quest.de>,
-// Ralf Stockmann <rstockm@gwdg.de>, André Noack André Noack <andre.noack@gmx.net>
+// Ralf Stockmann <rstockm@gwdg.de>, AndrÃ© Noack AndrÃ© Noack <andre.noack@gmx.net>
 // +---------------------------------------------------------------------------+
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -35,7 +35,6 @@
 // +---------------------------------------------------------------------------+
 
 global
-  $CALENDAR_MAX_EVENTS,
   $FLASHPLAYER_DEFAULT_CONFIG_MIN,
   $FLASHPLAYER_DEFAULT_CONFIG_MAX,
   $INST_ADMIN_DATAFIELDS_VIEW,
@@ -72,11 +71,11 @@ you find here the indivdual settings for your installation.
 
 //Some more basic data
 //Note: The the clean-name of your institution ($UNI_NAME_CLEAN) is stored in the config_local.inc.php
-$UNI_URL = "http://www.studip.de";
+$UNI_URL = "https://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}";
 $UNI_LOGIN_ADD='';
 $UNI_LOGOUT_ADD=sprintf(_("Und hier geht's zur %sStud.IP Portalseite%s&nbsp;"), "<a href=\"http://www.studip.de\"><b>", "</b></a>");
 $UNI_CONTACT = "<please insert your general contact mail-adress here>";
-$UNI_INFO = "Stud.IP 3.5 - Studienbegleitender Internetsupport von Präsenzlehre";
+$UNI_INFO = "Stud.IP 3.5 - Studienbegleitender Internetsupport von PrÃ¤senzlehre";
 
 
 /* $SEM_CLASS and $SEM_TYPE configuration moved to database
@@ -90,18 +89,17 @@ $DEFAULT_TITLE_FOR_STATUS = array(
     'tutor'    => array(_('Tutor/-in'), _('Tutor/-innen')),
     'autor'    => array(_('Studierende'), _('Studierende')),
     'user'     => array(_('Leser/-in'), _('Leser/-innen')),
-    'accepted' => array(_('Vorläufig akzeptierte Person'),
-                        _('Vorläufig akzeptierte Personen')));
+    'accepted' => array(_('VorlÃ¤ufig akzeptierte Person'),
+                        _('VorlÃ¤ufig akzeptierte Personen')));
 
 
 /*
 possible types of sem_tree ("Veranstaltungshierarchie") types
 the "editable" flag could be used to prevent modifications, e.g. imported data
-the "is_module" flag specifies an entry which represents a "Studienmodul", if the "studienmodulmanagement"
-plugin interface is used
+the "hidden" flag could be used to hide entries that are no longer in use
 */
 $SEM_TREE_TYPES[0] = array("name" => "", "editable" => true); //default type, must be present
-//$SEM_TREE_TYPES[1] = array("name" => _("Studienmodul") , "editable" => true, "is_module" => true);
+//$SEM_TREE_TYPES[1] = array("name" => _("Studienmodul") , "editable" => true);
 
 
 /* Set the allowed and prohibited file types for the types given above.
@@ -173,7 +171,7 @@ $UPLOAD_TYPES["personalfiles"] =
 * if none is given, the designations of $SEM_STATUS_GROUPS["default"] are used
 */
 $SEM_STATUS_GROUPS["default"] = array ("Lehrende", "Tutor/-innen", "Autor/-innen", "Leser/-innen", "sonstige");    //the default. Don't delete this entry!
-$SEM_STATUS_GROUPS["2"] = array ("Organisatoren", "Mitglieder", "Ausschußmitglieder", "sonstige");
+$SEM_STATUS_GROUPS["2"] = array ("Organisatoren", "Mitglieder", "AusschuÃŸmitglieder", "sonstige");
 $SEM_STATUS_GROUPS["3"] = array ("Moderatoren des Forums","Mitglieder", "sonstige");
 // ...can be continued accordingly
 
@@ -186,7 +184,7 @@ $INST_TYPE[3]=array("name"=>_("Lehrstuhl"));
 $INST_TYPE[4]=array("name"=>_("Abteilung"));
 $INST_TYPE[5]=array("name"=>_("Fachbereich"));
 $INST_TYPE[6]=array("name"=>_("Seminar"));
-$INST_TYPE[7]=array("name"=>_("Fakultät"));
+$INST_TYPE[7]=array("name"=>_("FakultÃ¤t"));
 $INST_TYPE[8]=array("name"=>_("Arbeitsgruppe"));
 // ...can be continued accordingly
 
@@ -241,7 +239,7 @@ $PERS_TERMIN_KAT[3]=array("name"=>_("Vorbesprechung"), "color"=>"#b02e7c");
 $PERS_TERMIN_KAT[4]=array("name"=>_("Klausur"), "color"=>"#129c94");
 $PERS_TERMIN_KAT[5]=array("name"=>_("Exkursion"), "color"=>"#f26e00");
 $PERS_TERMIN_KAT[6]=array("name"=>_("Sondersitzung"), "color"=>"#a85d45");
-$PERS_TERMIN_KAT[7]=array("name"=>_("Prüfung"), "color"=>"#6ead10");
+$PERS_TERMIN_KAT[7]=array("name"=>_("PrÃ¼fung"), "color"=>"#6ead10");
 $PERS_TERMIN_KAT[8]=array("name"=>_("Telefonat"), "color"=>"#d60000");
 $PERS_TERMIN_KAT[9]=array("name"=>_("Besprechung"), "color"=>"#ffbd33");
 $PERS_TERMIN_KAT[10]=array("name"=>_("Verabredung"), "color"=>"#66b570");
@@ -251,9 +249,6 @@ $PERS_TERMIN_KAT[13]=array("name"=>_("Urlaub"), "color"=>"#70c3bf");
 $PERS_TERMIN_KAT[14]=array("name"=>_("Reise"), "color"=>"#f7a866");
 $PERS_TERMIN_KAT[15]=array("name"=>_("Vorlesung"), "color"=>"#ca9eaf");
 // more categories can be added here
-
-//number of personal events each user can store in his calendar
-$CALENDAR_MAX_EVENTS = 1000;
 
 //preset for academic titles -  add further titles to the array, if necessary
 $TITLE_FRONT_TEMPLATE = array("","Prof.","Prof. Dr.","Dr.","PD Dr.","Dr. des.","Dr. med.","Dr. rer. nat.","Dr. forest.",
@@ -365,4 +360,3 @@ $NOT_HIDEABLE_FIELDS = array(
 );
 //Add ids of datafields to use for import on teilnehmer.php
 $TEILNEHMER_IMPORT_DATAFIELDS = array();
-
