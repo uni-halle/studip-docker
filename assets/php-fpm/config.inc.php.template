@@ -71,7 +71,7 @@ you find here the indivdual settings for your installation.
 
 //Some more basic data
 //Note: The the clean-name of your institution ($UNI_NAME_CLEAN) is stored in the config_local.inc.php
-$UNI_URL = "https://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}";
+$UNI_URL = "${NGINX_PROTOCOL}://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}";
 $UNI_LOGIN_ADD='';
 $UNI_LOGOUT_ADD=sprintf(_("Und hier geht's zur %sStud.IP Portalseite%s&nbsp;"), "<a href=\"http://www.studip.de\"><b>", "</b></a>");
 $UNI_CONTACT = "<please insert your general contact mail-adress here>";
