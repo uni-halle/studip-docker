@@ -77,8 +77,8 @@ services:
       - MYSQL_DATABASE
 #      - MYSQL_USER
 #      - MYSQL_PASSWORD
-    ports:
-      - "${MYSQL_PORT}:3306"
+#    ports:
+#      - "${MYSQL_PORT}:3306"
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
       - ./assets/mysql:/etc/mysql/conf.d
