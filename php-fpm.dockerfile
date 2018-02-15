@@ -1,4 +1,4 @@
-FROM php:5-fpm
+FROM php:7.0-fpm
 
 ARG TZ
 ARG BUILD_NO
@@ -39,8 +39,8 @@ RUN \
 
 # PHP-Erweiterungen installieren
 RUN \
-	docker-php-ext-install -j$(nproc) xsl iconv dom pdo mysql mysqli \
-	pdo_mysql json soap curl bcmath mcrypt zip bz2 mbstring pcntl \
+	docker-php-ext-install -j$(nproc) xsl iconv dom pdo  mysqli \
+	pdo_mysql json soap curl bcmath zip bz2 mbstring pcntl \
 	opcache gettext session ftp xml  \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ \
 	--with-jpeg-dir=/usr/include/ \
