@@ -54,8 +54,6 @@ COPY --chown=www-data:www-data assets/studip-release/4.0 /var/www/studip
 COPY assets/php-fpm/config_local.inc.php.template /var/www/studip/config/config_local.inc.php.template
 COPY assets/php-fpm/config.inc.php.template /var/www/studip/config/config.inc.php.template
 
-#RUN chown -R www-data:www-data ${PHP_FPM_WEB_ROOT}
-
 RUN mkdir -p /var/log/php && chown www-data:www-data /var/log/php
 
 # Einstiegspunkt setzen
