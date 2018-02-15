@@ -1,0 +1,7 @@
+assets/studip-release/
+volumes/log/*
+volumes/mysql-data/*
+volumes/studip-data/*
+!volumes/log/php-fpm/.gitkeep
+!volumes/log/nginx/.gitkeep
+!volumes/mysql-data/.gitkeep
