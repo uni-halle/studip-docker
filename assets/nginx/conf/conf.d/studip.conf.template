@@ -78,7 +78,6 @@ ${STUDIP_SSL_CONFIG}
 	# allow all PHP files in root dir
 	# Some plugins unfortunately also add entrypoints.
 	location ~ ^(/[^/]+\.php(/)*.*|(/Customizing/global/plugins/|/cron/|/include/|/Modules/|/Services/|/setup/|/sso/|/webservice/).*\.php(/.*)?)$ {
-#	location ~ ^/.*\.php.*$ {
 		# split e.g. /plugin/api.php/whatever into /plugin/api.php
 		# and whatever
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
@@ -100,8 +99,7 @@ ${STUDIP_SSL_CONFIG}
 		fastcgi_connect_timeout 60;
 		fastcgi_send_timeout 7200;
 		fastcgi_read_timeout 7200;
-		fastcgi_buffer_size 128k;
-		fastcgi_buffers 4 256k;
+		fastcgi_buffer_size 128k;		fastcgi_buffers 4 256k;
 		fastcgi_busy_buffers_size 256k;
 		fastcgi_temp_file_write_size 256k;
 		fastcgi_intercept_errors on;
