@@ -2,7 +2,7 @@
 
 set -e
 
-export STUDIP_SSL_CONFIG="	listen 80;"
+export STUDIP_SSL_CONFIG="	listen ${NGINX_HOST_SSL_PORT};"
 export STUDIP_HTTPS_REDIRECT_CONFIG=""
 
 if [ "$NGINX_FORCE_HTTPS" = true ] && ! [ "$NGINX_SSL_ENABLED" = true ]; then
@@ -21,7 +21,7 @@ fi
 
 if [ "$NGINX_SSL_ENABLED" = true ]; then
 	export STUDIP_SSL_CONFIG="
-	listen 443 ssl;
+	listen ${NGINX_HOST_SSL_PORT} ssl;
 
 	ssl_certificate      /etc/nginx/ssl/studip.chain.pem;
 	ssl_certificate_key  /etc/nginx/ssl/studip.key;
@@ -56,7 +56,7 @@ if [ "$NGINX_SSL_ENABLED" = true ]; then
 		# header and apply it to future requests.
                 export studip_HTTPS_REDIRECT_CONFIG="
 server {
-	listen         80 ssl;
+	listen         ${NGINX_HOST_PORT} ssl;
 
         ssl_certificate      /etc/nginx/ssl/studip.chain.pem;
         ssl_certificate_key  /etc/nginx/ssl/studip.key;
@@ -70,7 +70,7 @@ server {
 "
 	else
 		export STUDIP_SSL_CONFIG="$STUDIP_SSL_CONFIG
-	listen 80;
+	listen ${NGINX_HOST_PORT};
 "
 	fi
 
