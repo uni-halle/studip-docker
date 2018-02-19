@@ -61,7 +61,7 @@ ${STUDIP_SSL_CONFIG}
 ############################################################################
 
 	# FCGI-pass some requests to PHP files:
-	location ~ ^/([^/]+)|(plugins_packages/.*)\.php(/.*)*$ {
+	location ~ ^/(([^/]+)\.php(/.*)*)|(plugins_packages/.*/.*\.php(/.*)*)$ {
 		# split e.g. /plugin/api.php/whatever into /plugin/api.php
 		# and whatever
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
@@ -99,16 +99,13 @@ ${STUDIP_SSL_CONFIG}
 
 		error_page 502 /502.html;
 		error_page 504 /504.html;
-
 		fastcgi_pass php-fpm:${PHP_FPM_PORT};
-
 	}
 
 	# Do not find php files except those listed above
 	location ~ \.php {
 		return 404;
 	}
-
 
 	location ~ /\.ht {
 		deny all;
