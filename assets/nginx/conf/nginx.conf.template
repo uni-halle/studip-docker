@@ -1,5 +1,5 @@
 daemon off;
-worker_processes 16;
+worker_processes ${NGINX_WORKER_PROCESSES};
 pid /var/run/nginx.pid;
 
 events {
