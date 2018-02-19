@@ -23,7 +23,7 @@ if [ "$NGINX_SSL_ENABLED" = true ]; then
 	export STUDIP_SSL_CONFIG="
 	listen ${NGINX_HOST_SSL_PORT} ssl;
 
-	ssl_certificate      /etc/nginx/ssl/studip.chain.pem;
+	ssl_certificate      /etc/nginx/ssl/studip.crt;
 	ssl_certificate_key  /etc/nginx/ssl/studip.key;
 "
 
@@ -58,7 +58,7 @@ if [ "$NGINX_SSL_ENABLED" = true ]; then
 server {
 	listen         ${NGINX_HOST_PORT} ssl;
 
-        ssl_certificate      /etc/nginx/ssl/studip.chain.pem;
+        ssl_certificate      /etc/nginx/ssl/studip.crt;
         ssl_certificate_key  /etc/nginx/ssl/studip.key;
 
 	server_name    $NGINX_SERVER_NAME;
@@ -73,13 +73,6 @@ server {
 	listen ${NGINX_HOST_PORT};
 "
 	fi
-
-	export ETHERPAD_SSL_CONFIG="
-	listen        8080 ssl;
-
-	ssl_certificate      /etc/nginx/ssl/studip.chain.pem;
-	ssl_certificate_key  /etc/nginx/ssl/studip.key;
-"
 fi
 
 echo 'substituting variables in nginx configuration'
@@ -88,6 +81,12 @@ envsubst \
 	 ${NGINX_WEB_ROOT} ${STUDIP_SSL_CONFIG} ${STUDIP_HTTPS_REDIRECT_CONFIG}' \
 	< /etc/nginx/conf.d/studip.conf.template \
 	> /etc/nginx/conf.d/studip.conf
+
+envsubst \
+	'${NGINX_WORKER_PROCESSES}' \
+	< /etc/nginx/nginx.conf.template \
+	> /etc/nginx/nginx.conf
+
 
 if [ "$STUDIP_SET_DD_PERMISSION" = true ]; then
 	echo 'Setting data directory permission.'
