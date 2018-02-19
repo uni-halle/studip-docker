@@ -9,9 +9,9 @@ envsubst \
 
 echo 'Configuring SSMPT for sending Mail ...'
 echo FIXME
-#envsubst \
-#        < /etc/ssmtp/ssmtp.conf.template \
-#        > /etc/ssmtp/ssmtp.conf
+envsubst \
+        < /etc/ssmtp/ssmtp.conf.template \
+        > /etc/ssmtp/ssmtp.conf
 
 echo 'Configuring Stud.IP'
 envsubst \

@@ -29,7 +29,8 @@ services:
       - PHP_PM_START_SERVERS
       - PHP_PM_MIN_SPARE_SERVERS
       - PHP_PM_MAX_SPARE_SERVERS
-
+      - STUDIP_MAIL_HOST_NAME
+      - STUDIP_MAIL_SMTP_SERVER
     volumes:
       - ./volumes/log/php-fpm:/var/log/php
       - ./volumes/studip-data:/usr/local/studip/data

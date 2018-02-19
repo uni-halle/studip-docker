@@ -20,10 +20,8 @@ RUN \
 RUN mkdir -p /usr/share/man/man1
 
 # Benoetigte Pakete installieren
-
 RUN \
-	apt-get -y install default-jre default-jre-headless gettext-base\
-	           mc
+	apt-get -y install default-jre default-jre-headless gettext-base
 
 # informationen zu den benötigten Paketen: http://zgadzaj.com/how-to-install-php-53-and-52-together-on-ubuntu-1204
 RUN \
@@ -32,10 +30,8 @@ RUN \
                            libssl-dev libjpeg-dev libpng-dev mariadb-client\
                            libfreetype6-dev libjpeg62-turbo-dev libxslt1-dev\
                            libmcrypt-dev curl libtidy-dev libldap2-dev \
-                           unzip \
+                           unzip ssmtp\
 	&& rm -r /var/lib/apt/lists/*
-
-
 
 # PHP-Erweiterungen installieren
 RUN \
@@ -49,15 +45,19 @@ RUN \
 	&& pear install XML_RPC2 mail HTTP_Request2 Auth DB HTML_Template_IT \
 	MDB2
 
+
+# Standard PHP-FPM config aus dem Weg räumen
 RUN \ 
 	mv /usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf.old
 
+COPY assets/php-fpm/ssmtp.conf.template /etc/ssmtp/ssmtp.conf.template
 COPY assets/php-fpm/www.conf.template /usr/local/etc/php-fpm.d/www.conf.template
 COPY assets/php-fpm/php-fpm-entrypoint.sh /php-fpm-entrypoint.sh
 COPY --chown=www-data:www-data assets/studip-release/4.0 /var/www/studip
 COPY assets/php-fpm/config_local.inc.php.template /var/www/studip/config/config_local.inc.php.template
 COPY assets/php-fpm/config.inc.php.template /var/www/studip/config/config.inc.php.template
 
+# Verzeichnis für Logdateien anlegen und Rechte setzten
 RUN mkdir -p /var/log/php && chown www-data:www-data /var/log/php
 
 # Einstiegspunkt setzen
