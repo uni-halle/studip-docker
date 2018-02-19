@@ -17,6 +17,7 @@ services:
       - BUILD_NO
       - NGINX_SERVER_NAME
       - NGINX_HOST_PORT
+      - NGINX_HOST_SSL_PORT
       - NGINX_PROTOCOL
       - MYSQL_HOST
       - MYSQL_DATABASE
@@ -24,8 +25,11 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_PORT
       - PHP_FPM_WEB_ROOT
-#    ports:
-#      - "127.0.0.1:${PHP_FPM_HOST_PORT}:9000"
+      - PHP_PM_MAX_CHILDREN
+      - PHP_PM_START_SERVERS
+      - PHP_PM_MIN_SPARE_SERVERS
+      - PHP_PM_MAX_SPARE_SERVERS
+
     volumes:
       - ./volumes/log/php-fpm:/var/log/php
       - ./volumes/studip-data:/usr/local/studip/data
@@ -46,15 +50,14 @@ services:
       - BUILD_NO
       - PHP_FPM_PORT=9000
       - NGINX_SERVER_NAME
-      - ILIAS_SET_DD_PERMISSION
-      - ILIAS_MAX_EXECUTION_TIME
-      - ILIAS_DEVEL_MODE
+      - STUDIP_SET_DD_PERMISSION
       - NGINX_SSL_ENABLED
       - NGINX_FORCE_HTTPS
       - NGINX_PROTOCOL
       - NGINX_HOST_PORT
       - NGINX_HOST_SSL_PORT
       - NGINX_WEB_ROOT
+      - NGINX_WORKER_PROCESSES
     ports:
       - "${NGINX_HOST_SSL_PORT}:${NGINX_HOST_SSL_PORT}"
       - "${NGINX_HOST_PORT}:${NGINX_HOST_PORT}"

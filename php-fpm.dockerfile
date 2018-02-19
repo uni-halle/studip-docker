@@ -49,6 +49,10 @@ RUN \
 	&& pear install XML_RPC2 mail HTTP_Request2 Auth DB HTML_Template_IT \
 	MDB2
 
+RUN \ 
+	mv /usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf.old
+
+COPY assets/php-fpm/www.conf.template /usr/local/etc/php-fpm.d/www.conf.template
 COPY assets/php-fpm/php-fpm-entrypoint.sh /php-fpm-entrypoint.sh
 COPY --chown=www-data:www-data assets/studip-release/4.0 /var/www/studip
 COPY assets/php-fpm/config_local.inc.php.template /var/www/studip/config/config_local.inc.php.template

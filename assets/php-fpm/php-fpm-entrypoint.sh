@@ -3,10 +3,9 @@
 set -e
 
 echo 'Configuring PHP-FPM ...'
-echo FIXME
-#envsubst \
-#	< /usr/local/etc/php/conf.d/studip.ini.template \
-#	> /usr/local/etc/php/conf.d/studip.ini
+envsubst \
+	< /usr/local/etc/php-fpm.d/www.conf.template \
+	> /usr/local/etc/php-fpm.d/www.conf
 
 echo 'Configuring SSMPT for sending Mail ...'
 echo FIXME
