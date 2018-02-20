@@ -28,8 +28,8 @@ push:
     - studip-staging
   only:
     - master
-  script:
-    - ./taskit push user=gitlab-ci-token pass=$CI_JOB_TOKEN
+          script:
+            - ./taskit push user=gitlab-ci-token pass=$CI_JOB_TOKEN services="nginx php-fpm mariadb"
 
 
 deploy-staging:
@@ -43,5 +43,5 @@ deploy-staging:
     name: staging
   script:
   # Deploy latest image
-    - ./taskit deploy-from-registry user=gitlab-ci-token pass=$CI_JOB_TOKEN
+    - ./taskit deploy-from-registry user=gitlab-ci-token pass=$CI_JOB_TOKEN services="nginx php-fpm mariadb"
  
