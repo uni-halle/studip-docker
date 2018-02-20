@@ -30,6 +30,6 @@ deploy-staging:
     - master
   environment:
     name: staging
-  script:
+#  script:
   # hier Kopien der Volumes des live-Systems mounten
   
