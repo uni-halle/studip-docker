@@ -1,4 +1,4 @@
-Ein leeres vanilla studip für Vorarbeiten zum Update.
+Ein leeres Stud.IP 4.0 für Vorarbeiten zum Update.
 
 ## TODO
 ### Database
