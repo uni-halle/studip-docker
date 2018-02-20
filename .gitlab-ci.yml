@@ -5,11 +5,13 @@ stages:
   - deploy-production
 
 before_script:
-  # Link .env file
+  # Aktualisiere Stud.IP Quellen
+  - svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/branches/4.0/ ~/studip40/studip-release/4.0
+  # Kopiere Stud.IP Quellen ohne .svn Ordner
+  - rsync -aC ~/studip40/studip-release/4.0/ $(pwd)/assets/studip-release/4.0
+  # Symlink auf .env file
   - ln -sf ~/studip40/.env .env
-  - mkdir -p ~/studip40/main
   - ln -sfn $(pwd) ~/studip40/main
-  - ln -sfn ~/studip40/studip-release/4.0 $(pwd)/assets/studip-release/4.0
  
 build:
   stage: build
