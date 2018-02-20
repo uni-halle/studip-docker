@@ -4,7 +4,7 @@ stages:
   - deploy-staging
   - deploy-production
 
-before-script:
+before_script:
   # Link .env file
   - ln -sf ~/studip40/.env .env
   - mkdir -p ~/studip40/main
