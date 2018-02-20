@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+
+# IMPORTANT: Ensures bash exits if an error occures.
+set -eu
+
+# Get the environment
+[ ! -f .env ] && echo "Missing .env file. Exit." && exit
+source .env
+
+#
+# Helpers
+#
+
+wait_for_initialisation() {
+
+    # Allow nginx some time to generate the diffie-hellman-groups
+    sleep 30
+
+    # Check if camunda replies
+    wget --retry-connrefused -O - "http://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}/" | grep -q "STUDIP"
+
+}
+
+#
+# Tasks
+#
+
+Task::build () {
+
+    : @desc "Build images."
+
+    docker-compose build
+
+}
+
+Task::clean-build () {
+
+    : @desc "Pulls latest version of images and builds from scratch."
+
+    docker-compose build --pull --no-cache
+
+}
+
+Task::push () {
+
+    : @desc "Push images to gitlab registry."
+    : @param user! "The registry user."
+    : @param pass! "The registry pass."
+    
+    docker login -u $_user -p $_pass docker-registry.itz.uni-halle.de
+    docker-compose push
+
+}
+
+Task::build-and-deploy () {
+
+    : @desc "Builds all images and deploys them."
+
+    : @needs build
+
+    # Tear down containers
+    docker-compose down
+    
+    # Tear up containers without rebuild
+    docker-compose up -d $HOST_CONTAINERS
+    
+    # Wait until camunda replies
+    wait_for_camunda
+
+}
+
+Task::deploy-from-registry () {
+
+    : @desc "Pull and deploy images from gitlab registry."
+    : @param user! "The registry user."
+    : @param pass! "The registry pass."
+    
+    # Login to registry
+    docker login -u $_user -p $_pass docker-registry.itz.uni-halle.de
+
+    # Tear down containers
+    docker-compose down
+    
+    # Pull latest images
+    docker-compose pull
+
+    # Tear up containers without rebuild
+    docker-compose up -d --no-build $HOST_CONTAINERS
+    
+    # Wait until camunda replies
+    wait_for_camunda
+
+}
+
+Task::install-crontab () {
+
+    : @desc "Installs cronjobs as root. Run with sudo. (Overwrites other cronjobs!)"
+
+    # Check sudo/root rights
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run using sudo. Exit."
+        exit
+    fi
+
+    # Install cronjobs
+    crontab cronjobs
+
+}
+
+Task::backup () {
+
+    : @desc "Backup all volumes and containers. Run with sudo."
+
+    # Check sudo/root rights
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run using sudo. Exit."
+        exit
+    fi
+
+    # Create backup directory
+    DATE=$(date +%F_%R)
+    mkdir -p "$BACKUP_PATH/$DATE"
+    
+    # Stop all containers to ensure a valid backup.
+    # (only $HOST_CONTAINERS should be running anyway)
+    docker-compose stop
+
+    # Copy all volumes
+    taskit_log "Copying volumes."
+    cp -pr "$VOLUME_PATH"/* "$BACKUP_PATH/$DATE/"
+
+    # Export containers
+    taskit_log "Exporting containers."
+    docker-compose ps | sed 1,2d | awk '{print $1}' | xargs -l -I NAME docker export -o "$BACKUP_PATH/$DATE/NAME.tar" NAME
+
+    # Start up containers and wait for camunda
+    docker-compose start $HOST_CONTAINERS
+
+    # Wait until camunda replies
+    wait_for_camunda
+
+    # Link 'latest' in backup dir
+    rm -f "$BACKUP_PATH/latest"
+    ln -sr "$BACKUP_PATH/$DATE" "$BACKUP_PATH/latest"
+
+    # Delete all backups older than 10 days
+    find "$BACKUP_PATH"/* -maxdepth 1 -type d -ctime +10 | xargs rm -rf
+
+}
+
+Task::restore () {
+
+    : @desc "Restore all volumes. Run with sudo."
+    : @param version=latest "The version to restore (default: latest)."
+
+    # Check sudo/root rights
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run using sudo. Exit."
+        exit
+    fi
+
+    # Check if restore directory is empty.
+    if [ ! "$(ls -A "$BACKUP_PATH/$_version/" 2>/dev/null)" ]; then
+        echo "Directory '$BACKUP_PATH/$_version/' is empty or does not exist. Exit." 
+        exit
+    fi
+
+    # Stop all containers to ensure a valid restore.
+    # (only $HOST_CONTAINERS should be running anyway)
+    docker-compose stop
+
+    # Replace volumes with backup
+    rm -rf "$VOLUME_PATH"/*
+    cp -pr "$BACKUP_PATH/$_version"/* "$VOLUME_PATH/"
+
+}
+
+Task::fetch-external-backup () {
+
+    : @desc "Fetches a backup from a remote host. Run with sudo."
+    : @param from_host! "The host from which to get the data."
+    : @param version=latest "The external version to sync (default: latest)."
+
+    # Check sudo/root rights
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run using sudo. Exit."
+        exit
+    fi
+
+    # Pass password to rsync.
+    export RSYNC_PASSWORD=$RSYNC_PASS
+
+    # Rsync files from host
+    mkdir -p "$BACKUP_PATH/$_from_host/$_version"
+    rsync -a --del "rsync://$RSYNC_USER@$_from_host/data/$_version/*" "$BACKUP_PATH/$_from_host/$_version"
+
+}
+
+Task::docs-start-preview () {
+
+    : @desc "Starts a preview of the documentation at port 8000."
+
+    docker container run -d --rm -p 8000:8000 --name documents -v $PWD:/docs squidfunk/mkdocs-material
+
+}
+
+Task::docs-stop-preview () {
+
+    : @desc "Stops the preview of the documentation."
+
+    docker container stop documents
+
+}
+

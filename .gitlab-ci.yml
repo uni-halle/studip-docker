@@ -1,0 +1,21 @@
+stages:
+  - build
+  - push
+  - deploy-staging
+  - deploy-production
+
+
+before-script:
+  # Link .env file
+  - ln -sf ~/studip40/.env .env
+  - ln -sfn $(pwd) ~/studip40/main
+ 
+build:
+  stage: build
+  retry: 2
+  tags:
+    - studip-staging
+  script:
+    - ./taskit build
+
+
