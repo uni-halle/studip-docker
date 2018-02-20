@@ -9,6 +9,7 @@ before_script:
   - ln -sf ~/studip40/.env .env
   - mkdir -p ~/studip40/main
   - ln -sfn $(pwd) ~/studip40/main
+  - ln -sfn ~/studip40/studip-release/4.0 $(pwd)/assets/studip-release/4.0
  
 build:
   stage: build
