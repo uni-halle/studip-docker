@@ -65,7 +65,7 @@ Task::build-and-deploy () {
     docker-compose up -d $HOST_CONTAINERS
     
     # Wait until camunda replies
-    wait_for_camunda
+    wait_for_initialisation
 
 }
 

@@ -21,4 +21,15 @@ build:
   script:
     - ./taskit build
 
-
+deploy-staging:
+  stage: deploy-staging
+  retry: 2
+  tags:
+    - studip-staging
+  only:
+    - master
+  environment:
+    name: staging
+  script:
+  # hier Kopien der Volumes des live-Systems mounten
+  
