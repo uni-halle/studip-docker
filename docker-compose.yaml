@@ -1,9 +1,8 @@
 version: "2"
 services:
 
-
   php-fpm:
-#    image: ${REGISTRY}:php-fpm-7
+    image: ${REGISTRY}:php-fpm-7
     build:
       context: .
       dockerfile: php-fpm.dockerfile
@@ -37,7 +36,7 @@ services:
 
 
   nginx:
-#    image: ${REGISTRY}:nginx-5.1.18
+    image: ${REGISTRY}:nginx-5.1.18
     build:
       context: .
       dockerfile: nginx.dockerfile
@@ -64,13 +63,12 @@ services:
       - "${NGINX_HOST_PORT}:${NGINX_HOST_PORT}"
     volumes:
       - ./volumes/log/nginx:/var/log/nginx
-      - ./cert/ssl-server:/etc/cert/ssl-server
     links:
       - php-fpm
 
 
   mariadb:
-#    image: ${REGISTRY}:mariadb:10.0
+    image: ${REGISTRY}:mariadb:10.0
     build:
         context: .
         dockerfile: mariadb.dockerfile
