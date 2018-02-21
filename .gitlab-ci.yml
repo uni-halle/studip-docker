@@ -29,7 +29,7 @@ push:
   only:
     - master
   script:
-    - ./taskit push user=gitlab-ci-token pass=$CI_JOB_TOKEN services="nginx php-fpm mariadb"
+    - ./taskit push user=gitlab-ci-token pass=$CI_JOB_TOKEN
 
 
 deploy-staging:
