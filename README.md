@@ -22,6 +22,8 @@ Soll ein Abbild eines schon vorhandenen Stud.IPs generiert werden, müssen die Q
 in `./assets/studip-release/4.0/` liegen und ein Datenbankdump in `./assets/mysql/docker-entrypoint-initdb.d/`. 
 Die für eine Testinstallation schon in `./assets/mysql/docker-entrypoint-initdb.d/` vorhandenen sql-Dateien müssen in diesem Fall vorher gelöscht werden.
 
+In `./assets/nginx/ssl/` liegen ungültiges Zertifikat und Serverkey. Diese müssen für sichere SSL-Verbindungen mit validen Dateien ersetzt werden.
+
 ## Quickstart
 
 ### Testinstanz
