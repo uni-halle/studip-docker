@@ -5,18 +5,18 @@ Ein leeres Stud.IP 4.0 für Vorarbeiten zum Update.
 
 ## Vorbemerkungen
 Werden alle Images dieses Repos gebaut und als Container gestartet, existieren danach 
-ein NGINX ein PHP-FPM, ein mariadb und ein mkdocs Container.
+ein NGINX ein PHP-FPM, ein mariadb und ein MKDOCS Container.
 Die Ports des Datenbankservers und von PHP-FPM werden nicht exposed. 
-Nginx und PHP-FPM sowie mariadb und PHP-FPM kommunizieren über die von Docker generierte Bridge.
+NGINX und PHP-FPM sowie MariaDB und PHP-FPM kommunizieren über die von Docker generierte Bridge.
 Nur die Ports für http und ggf. https werden exposed.
 
 Es existieren drei Volumes in `./volumes/`:
 1. log/nginx bzw. log/php-fpm - wird in den PHP-FPM und NGINX Container gemappt. Darin legen diese Dienste ihre Logdateien ab
-2. mysql-data - ist vor dem ersten Start des mariadb Containers leer. Darin legt der Datenbankserver des mariadb Containers seine Daten ab.
+2. mysql-data - ist vor dem ersten Start des mariadb Containers leer. Darin legt der Datenbankserver des MariaDB Containers seine Daten ab.
 
-Der mariadb Container ist vor allem für Testinstallationen mit lokaler Datenbank sinnvoll. 
-Wird der zentrale mysql-Server benutzt, muss er nicht gebaut oder gestartet werden. 
-Soll der mariadb-Container mit einer leeren Datenbank neu aufgesetzt werden, muss der Inhalt von `./volumes/mysql-data/` gelöscht werden.
+Der MariaDB Container ist vor allem für Testinstallationen mit lokaler Datenbank sinnvoll. 
+Wird der zentrale MySQL-Server benutzt, muss er nicht gebaut oder gestartet werden. 
+Soll der MariaDB-Container mit einer leeren Datenbank neu aufgesetzt werden, muss der Inhalt von `./volumes/mysql-data/` gelöscht werden.
 
 Soll ein Abbild eines schon vorhandenen Stud.IPs generiert werden, müssen die Quelldateien 
 in `./assets/studip-release/4.0/` liegen und ein Datenbankdump in `./assets/mysql/docker-entrypoint-initdb.d/`. 
@@ -28,7 +28,7 @@ In `./assets/nginx/ssl/` liegen ungültiges Zertifikat und Serverkey. Diese müs
 
 ### Testinstanz
 
-Eine leere Instanz von Studip 4.0 mit Containern für nginx, php-fpm und mysql. Die Daten für den mysql Container müssen nicht verändert werden. 
+Eine leere Instanz von Studip 4.0 mit Containern für NGINX, PHP-FPM und MariaDB. Die Daten für den MariaDB Container müssen nicht verändert werden. 
 In diesem Fall wären dann aber die Credentials für die Datenbank allgemein bekannt.
 
 1. Repo klonen
