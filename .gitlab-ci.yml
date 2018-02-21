@@ -23,7 +23,8 @@ build:
   tags:
     - studip-staging
   script:
-    - docker-compose build
+    #- docker-compose build
+    - ./taskit build
 
 push:
   stage: push
@@ -33,8 +34,9 @@ push:
   only:
     - master
   script:
-    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
-    - docker-compose push mariadb nginx php-fpm
+#    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
+#    - docker-compose push mariadb nginx php-fpm
+     - ./taskit push user=gitlab-ci-token pass=$CI_JOB_TOKEN
 
 
 deploy-staging:
@@ -48,6 +50,8 @@ deploy-staging:
     name: staging
   script:
   # Deploy latest image
-    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
-    - docker-compose pull
-    - docker-compose up -d --no-build $_services
+#    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
+#    - docker-compose pull
+#    - docker-compose up -d --no-build $_services
+     - ./taskit deploy-from-registry user=gitlab-ci-token pass=$CI_JOB_TOKEN
+
