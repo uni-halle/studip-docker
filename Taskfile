@@ -13,12 +13,10 @@ source .env
 
 wait_for_initialisation() {
 
-    # Allow nginx some time to generate the diffie-hellman-groups
+    # Allow nginx and mariadb to generate the diffie-hellman-groups and fill database
     sleep 30
-
-    # Check if camunda replies
-    wget --retry-connrefused -O - "http://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}/" | grep -q "STUDIP"
-
+    # Check if server replies
+    wget --timeout=300 --retry-connrefused -O - "http://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}/" | grep -q "STUDIP"
 }
 
 #
@@ -64,7 +62,7 @@ Task::build-and-deploy () {
     # Tear up containers without rebuild
     docker-compose up -d $HOST_CONTAINERS
     
-    # Wait until camunda replies
+    # Wait until server replies
     wait_for_initialisation
 
 }
@@ -87,8 +85,8 @@ Task::deploy-from-registry () {
     # Tear up containers without rebuild
     docker-compose up -d --no-build $HOST_CONTAINERS
     
-    # Wait until camunda replies
-    wait_for_camunda
+    # Wait until server replies
+    wait_for_initialisation
 
 }
 
@@ -133,11 +131,11 @@ Task::backup () {
     taskit_log "Exporting containers."
     docker-compose ps | sed 1,2d | awk '{print $1}' | xargs -l -I NAME docker export -o "$BACKUP_PATH/$DATE/NAME.tar" NAME
 
-    # Start up containers and wait for camunda
+    # Start up containers and wait for server
     docker-compose start $HOST_CONTAINERS
 
-    # Wait until camunda replies
-    wait_for_camunda
+    # Wait until server replies
+    wait_for_initialisation
 
     # Link 'latest' in backup dir
     rm -f "$BACKUP_PATH/latest"
