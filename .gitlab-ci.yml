@@ -43,5 +43,5 @@ deploy-staging:
     name: staging
   script:
   # Deploy latest image
-    - ./taskit deploy-from-registry user=gitlab-ci-token pass=$CI_JOB_TOKEN services="nginx php-fpm mariadb"
+    - ./taskit deploy-from-registry user=gitlab-ci-token pass=$CI_JOB_TOKEN
  
