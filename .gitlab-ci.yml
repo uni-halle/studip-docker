@@ -12,14 +12,18 @@ before_script:
   # Symlink auf .env file
   - ln -sf ~/studip40/.env .env
   - ln -sfn $(pwd) ~/studip40/main
- 
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  REGISTRY: $CI_REGISTRY_IMAGE
+
 build:
   stage: build
   retry: 2
   tags:
     - studip-staging
   script:
-    - ./taskit build
+    - docker-compose build
 
 push:
   stage: push
@@ -29,7 +33,8 @@ push:
   only:
     - master
   script:
-    - ./taskit push user=gitlab-ci-token pass=$CI_JOB_TOKEN
+    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
+    - docker-compose push mariadb nginx php-fpm
 
 
 deploy-staging:
@@ -43,5 +48,5 @@ deploy-staging:
     name: staging
   script:
   # Deploy latest image
-    - ./taskit deploy-from-registry user=gitlab-ci-token pass=$CI_JOB_TOKEN
- 
+    - ./taskit deploy_images user=gitlab-ci-token pass=$CI_JOB_TOKEN services="mariadb nginx php-fpm"
+
