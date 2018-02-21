@@ -48,5 +48,6 @@ deploy-staging:
     name: staging
   script:
   # Deploy latest image
-    - ./taskit deploy_images user=gitlab-ci-token pass=$CI_JOB_TOKEN services="mariadb nginx php-fpm"
-
+    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
+    - docker-compose pull
+    - docker-compose up -d --no-build $_services
