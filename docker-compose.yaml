@@ -2,7 +2,7 @@ version: "2"
 services:
 
   php-fpm:
-    image: ${REGISTRY}:php-fpm-7
+    image: ${REGISTRY}:php7-fpm
     build:
       context: .
       dockerfile: php-fpm.dockerfile
@@ -36,7 +36,7 @@ services:
 
 
   nginx:
-    image: ${REGISTRY}:nginx-5.1.18
+    image: ${REGISTRY}:nginx-stable
     build:
       context: .
       dockerfile: nginx.dockerfile
@@ -68,7 +68,7 @@ services:
 
 
   mariadb:
-    image: ${REGISTRY}:mariadb:10.0
+    image: ${REGISTRY}:mariadb10
     build:
         context: .
         dockerfile: mariadb.dockerfile
