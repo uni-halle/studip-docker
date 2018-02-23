@@ -48,6 +48,7 @@ deploy-staging:
     - master
   environment:
     name: staging
+    url: http://studip-dev.itz.uni-halle.de:9980
   script:
   # Deploy latest image
 #    - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $REGISTRY
