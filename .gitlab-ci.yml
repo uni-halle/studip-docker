@@ -8,10 +8,10 @@ before_script:
   # Aktualisiere Stud.IP Quellen
   - svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/branches/4.0/ ~/studip40/studip-release/4.0
   # Kopiere Stud.IP Quellen ohne .svn Ordner
-  - rsync -aC ~/studip40/studip-release/4.0/ $(pwd)/assets/studip-release/4.0
+  - rsync -a --exclude=".svn" ~/studip40/studip-release/4.0/ ./assets/studip-release/4.0
   # Symlink auf .env file
   - ln -sf ~/studip40/.env .env
-  - ln -sfn $(pwd) ~/studip40/main
+  - ln -sfn "$(pwd)" ~/studip40/main
 
 variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
