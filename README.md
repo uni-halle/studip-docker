@@ -1,3 +1,5 @@
+[![Build Status](https://git.itz.uni-halle.de/elearning/ilias-docker/badges/master/build.svg)](https://git.itz.uni-halle.de/elearning/studip_vanilla/commits/master)
+
 # Stud.IP 4.0 in Docker
 
 Ein leeres Stud.IP 4.0 für Vorarbeiten zum Update.
