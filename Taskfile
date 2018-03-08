@@ -14,7 +14,6 @@ source .env
 wait_for_initialisation() {
 
     # Allow nginx and mariadb to generate the diffie-hellman-groups and fill database
-#    sleep 30
     # Check if server replies
     for ((i=0;i<10;i++)) ; do
       wget --timeout=300 --retry-connrefused -O - "http://${NGINX_SERVER_NAME}:${NGINX_HOST_PORT}/" | grep -q "STUDIP" && break
@@ -47,7 +46,7 @@ Task::push () {
     : @desc "Push images to gitlab registry."
     : @param user! "The registry user."
     : @param pass! "The registry pass."
-    
+
     docker login -u $_user -p $_pass docker-registry.itz.uni-halle.de
     docker-compose push
 
