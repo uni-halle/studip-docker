@@ -61,7 +61,7 @@ svn checkout --username=studip --password=studip --non-interactive svn://develop
 
 Alternativ kann man auch den Trunk mit dem aktuellen Entwicklungsstand auschecken:
 ```bash
-svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/trunc ./assets/studip-release/4.1
+svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/trunk ./assets/studip-release/4.1
 ```
 
 
