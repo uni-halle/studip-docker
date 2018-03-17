@@ -1,8 +1,8 @@
 [![Build Status](https://git.itz.uni-halle.de/elearning/ilias-docker/badges/master/build.svg)](https://git.itz.uni-halle.de/elearning/studip_vanilla/commits/master)
 
-# Stud.IP 4.0 in Docker
+# Stud.IP 4.1 in Docker
 
-Ein leeres Stud.IP 4.0 für Vorarbeiten zum Update.
+Ein leeres Stud.IP 4.1 für Vorarbeiten zum Update.
 
 
 ## Vorbemerkungen
@@ -47,21 +47,27 @@ In diesem Fall wären dann aber die Credentials für die Datenbank allgemein bek
     * MYSQL_USER
     * MYSQL_PASSWORD
 5. Stud.IP auschecken
-<pre><code>
-svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/branches/4.0/ ./assets/studip-release/4.0
-</code></pre>
+```bash
+svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/branches/4.1/ ./assets/studip-release/4.1
+```
 
-6. docker-compose build
-7. docker-compose up -d
+Alternativ kann man auch den Trunk mit dem aktuellen Entwicklungsstand auschecken:
+```bash
+svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/branches/4.1/ ./assets/studip-release/4.1
+```
+
+
+6. `docker-compose build`
+7. `docker-compose up -d`
 
 Die Installation sollte nach einer Weile unter http(s)://[NGINX_SERVER_NAME]:[NGINX_HOST_(SSL_)PORT]/ erreichbar sein. 
 Das erste Initialisieren der Datenbank dauert selbst für die Testdatenbank eine Weile (~ einige Minuten). 
 Wird der Build während dieser Initialisierung unterbrochen, liegen keine konsistenten Daten für die Datenbank vor. 
 In diesem Fall muss der Inhalt von `./volumes/mysql-data/` vor dem nächsten Build gelöscht werden.
 
-<pre><code>
+```bash
 docker-compose logs -f mariadb
-</code></pre>
+```
 
 verfolgt werden. Die Datenbank ist bereit wenn als eine der letzten Meldungen `mysqld: ready for connections` erscheint 
 und das Webinterface nicht mehr die Fehlermeldung ausgibt, dass die Datenbank nicht erreichbar sei.
