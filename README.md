@@ -26,6 +26,14 @@ Die für eine Testinstallation schon in `./assets/mysql/docker-entrypoint-initdb
 
 In `./assets/nginx/ssl/` liegen ungültiges Zertifikat und Serverkey. Diese müssen für sichere SSL-Verbindungen mit validen Dateien ersetzt werden.
 
+## Vorbereitungen
+
+Für eine erfolgreiche Installation werden müssen folgende Programme installiert sein:
+
+1. [docker](https://docs.docker.com/install/)
+2. [docker-compose](https://docs.docker.com/compose/install/)
+3. [subversion](https://subversion.apache.org/)
+
 ## Quickstart
 
 ### Testinstanz
@@ -53,7 +61,7 @@ svn checkout --username=studip --password=studip --non-interactive svn://develop
 
 Alternativ kann man auch den Trunk mit dem aktuellen Entwicklungsstand auschecken:
 ```bash
-svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/branches/4.1/ ./assets/studip-release/4.1
+svn checkout --username=studip --password=studip --non-interactive svn://develop.studip.de/studip/trunc ./assets/studip-release/4.1
 ```
 
 
