@@ -29,7 +29,7 @@ RUN \
 	&& rm /etc/nginx/conf.d/default.conf \
 	&& cd .. && rm -r assets
 
-COPY --chown=www-data:www-data assets/studip-release/4.0/public ${NGINX_WEB_ROOT}
+COPY --chown=www-data:www-data assets/studip-release/4.1/public ${NGINX_WEB_ROOT}
 COPY --chown=www-data:www-data assets/nginx/nginx-error-pages/studip-docker_504.html ${NGINX_WEB_ROOT}/504.html
 COPY --chown=www-data:www-data assets/nginx/nginx-error-pages/studip-docker_502.html ${NGINX_WEB_ROOT}/502.html
 

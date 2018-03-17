@@ -53,7 +53,7 @@ RUN \
 COPY assets/php-fpm/ssmtp.conf.template /etc/ssmtp/ssmtp.conf.template
 COPY assets/php-fpm/www.conf.template /usr/local/etc/php-fpm.d/www.conf.template
 COPY assets/php-fpm/php-fpm-entrypoint.sh /php-fpm-entrypoint.sh
-COPY --chown=www-data:www-data assets/studip-release/4.0 /var/www/studip
+COPY --chown=www-data:www-data assets/studip-release/4.1 /var/www/studip
 COPY assets/php-fpm/config_local.inc.php.template /var/www/studip/config/config_local.inc.php.template
 COPY assets/php-fpm/config.inc.php.template /var/www/studip/config/config.inc.php.template
 
