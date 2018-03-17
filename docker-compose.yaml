@@ -83,7 +83,7 @@ services:
 #      - "${MYSQL_PORT}:3306"
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
-      - ./assets/mysql:/etc/mysql/conf.d
+      - ./assets/mysql/conf.d:/etc/mysql/conf.d
 
 
   docs:
